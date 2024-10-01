@@ -1,5 +1,4 @@
 from app.core.config import settings
-from app.api.routes.chat import chat
 from fastapi.testclient import TestClient
 
 
@@ -18,9 +17,9 @@ def test_when_called_forwards_to_llm_and_returns_history(
     content = r.json()
     assert r.status_code == 200
     assert content['response']
-    assert len(content['history']) == 1
+    assert len(content['prompts']) == 1
 
     r = client.post(f"{settings.API_V1_STR}/chat", json={"prompt": "Testing"})
 
     content = r.json()
-    assert len(content['history']) == 2
+    assert len(content['prompts']) == 2
