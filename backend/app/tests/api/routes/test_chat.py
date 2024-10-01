@@ -11,10 +11,16 @@ def test_when_called_with_incorrect_body_format_returns_error(
     assert content
     assert r.status_code == 422
 
-def test_when_called_forwards_to_llm(
+def test_when_called_forwards_to_llm_and_returns_history(
         client: TestClient
 ) -> None:
     r = client.post(f"{settings.API_V1_STR}/chat", json={"prompt": "Hello"})
     content = r.json()
-    assert content['response']
     assert r.status_code == 200
+    assert content['response']
+    assert len(content['history']) == 1
+
+    r = client.post(f"{settings.API_V1_STR}/chat", json={"prompt": "Testing"})
+
+    content = r.json()
+    assert len(content['history']) == 2
